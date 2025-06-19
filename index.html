@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduHub - Learning Made Simple</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .subject-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-color: #4facfe;
+        }
+
+        .subject-card h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .subject-card p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .topics-menu {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .topics-menu.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .topics-menu h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .topic-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .topic-link {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .topic-link:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .topic-page {
+            display: none;
+        }
+
+        .topic-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .back-button:hover {
+            background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .topic-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-content h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .topic-content img {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .topic-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .subject-card {
+                padding: 20px;
+            }
+
+            .topic-links {
+                grid-template-columns: 1fr;
+            }
+
+            .topic-content {
+                padding: 20px;
+            }
+
+            .topic-content h2 {
+                font-size: 2rem;
+            }
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .math-icon { color: #e74c3c; }
+        .science-icon { color: #3498db; }
+        .history-icon { color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Homepage -->
+        <div id="homepage">
+            <header>
+                <h1>EduHub</h1>
+                <p class="subtitle">Explore, Learn, and Discover</p>
+            </header>
+
+            <div class="subjects-grid">
+                <!-- Mathematics Subject -->
+                <div class="subject-card" onclick="toggleTopics('math')">
+                    <span class="icon math-icon">📐</span>
+                    <h2>Mathematics</h2>
+                    <p>Explore the fascinating world of numbers, equations, and mathematical reasoning.</p>
+                    
+                    <div id="math-topics" class="topics-menu">
+                        <h3>Choose a Topic:</h3>
+                        <div class="topic-links">
+                            <a href="#" class="topic-link" onclick="showTopic('algebra')">Algebra</a>
+                            <a href="#" class="topic-link" onclick="showTopic('geometry')">Geometry</a>
+                            <a href="#" class="topic-link" onclick="showTopic('calculus')">Calculus</a>
+                            <a href="#" class="topic-link" onclick="showTopic('statistics')">Statistics</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Science Subject -->
+                <div class="subject-card" onclick="toggleTopics('science')">
+                    <span class="icon science-icon">🔬</span>
+                    <h2>Science</h2>
+                    <p>Discover the mysteries of the natural world through scientific exploration.</p>
+                    
+                    <div id="science-topics" class="topics-menu">
+                        <h3>Choose a Topic:</h3>
+                        <div class="topic-links">
+                            <a href="#" class="topic-link" onclick="showTopic('physics')">Physics</a>
+                            <a href="#" class="topic-link" onclick="showTopic('chemistry')">Chemistry</a>
+                            <a href="#" class="topic-link" onclick="showTopic('biology')">Biology</a>
+                            <a href="#" class="topic-link" onclick="showTopic('astronomy')">Astronomy</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Subject -->
+                <div class="subject-card" onclick="toggleTopics('history')">
+                    <span class="icon history-icon">🏛️</span>
+                    <h2>History</h2>
+                    <p>Journey through time and explore the events that shaped our world.</p>
+                    
+                    <div id="history-topics" class="topics-menu">
+                        <h3>Choose a Topic:</h3>
+                        <div class="topic-links">
+                            <a href="#" class="topic-link" onclick="showTopic('ancient')">Ancient Civilizations</a>
+                            <a href="#" class="topic-link" onclick="showTopic('medieval')">Medieval Period</a>
+                            <a href="#" class="topic-link" onclick="showTopic('modern')">Modern History</a>
+                            <a href="#" class="topic-link" onclick="showTopic('world-wars')">World Wars</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic Pages -->
+        <!-- Algebra Page -->
+        <div id="algebra-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Algebra</h2>
+                <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=500&h=300&fit=crop" alt="Algebra equations and graphs">
+                <p>Algebra is a branch of mathematics that uses symbols and letters to represent numbers and quantities in formulas and equations. It's the foundation for advanced mathematical concepts and is essential for problem-solving in various fields.</p>
+                <p>Key concepts include variables, coefficients, expressions, equations, and functions. Algebra helps us solve real-world problems by translating them into mathematical language and finding unknown values.</p>
+            </div>
+        </div>
+
+        <!-- Geometry Page -->
+        <div id="geometry-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Geometry</h2>
+                <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=500&h=300&fit=crop" alt="Geometric shapes and compass">
+                <p>Geometry is the study of shapes, sizes, relative positions of figures, and the properties of space. It's one of the oldest mathematical sciences, with practical applications in art, architecture, engineering, and everyday life.</p>
+                <p>From basic shapes like triangles and circles to complex three-dimensional forms, geometry helps us understand the spatial relationships that surround us.</p>
+            </div>
+        </div>
+
+        <!-- Calculus Page -->
+        <div id="calculus-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Calculus</h2>
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=500&h=300&fit=crop" alt="Calculus formulas and graphs">
+                <p>Calculus is the mathematical study of continuous change. It has two main branches: differential calculus (concerning rates of change) and integral calculus (concerning accumulation of quantities).</p>
+                <p>Calculus is fundamental to many scientific disciplines including physics, chemistry, biology, economics, and engineering. It provides tools for modeling and analyzing dynamic systems.</p>
+            </div>
+        </div>
+
+        <!-- Statistics Page -->
+        <div id="statistics-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Statistics</h2>
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" alt="Statistical charts and data visualization">
+                <p>Statistics is the science of collecting, organizing, analyzing, interpreting, and presenting data. It plays a crucial role in research, business decisions, and understanding trends in various fields.</p>
+                <p>Key concepts include measures of central tendency, probability distributions, hypothesis testing, and regression analysis. Statistics helps us make informed decisions based on data.</p>
+            </div>
+        </div>
+
+        <!-- Physics Page -->
+        <div id="physics-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Physics</h2>
+                <img src="https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&h=300&fit=crop" alt="Physics laboratory equipment">
+                <p>Physics is the fundamental science that seeks to understand how the universe works. It studies matter, energy, and their interactions, from the smallest subatomic particles to the largest galaxies.</p>
+                <p>Major areas include mechanics, thermodynamics, electromagnetism, quantum mechanics, and relativity. Physics provides the foundation for all other natural sciences and many technological advances.</p>
+            </div>
+        </div>
+
+        <!-- Chemistry Page -->
+        <div id="chemistry-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Chemistry</h2>
+                <img src="https://images.unsplash.com/photo-1554475901-4538ddfbccc2?w=500&h=300&fit=crop" alt="Chemistry laboratory with colorful reactions">
+                <p>Chemistry is the scientific study of matter, its properties, composition, structure, and the changes it undergoes during chemical reactions. It's often called the "central science" because it bridges physics and biology.</p>
+                <p>Key areas include organic chemistry, inorganic chemistry, physical chemistry, and biochemistry. Chemistry is essential for understanding life processes and developing new materials and medicines.</p>
+            </div>
+        </div>
+
+        <!-- Biology Page -->
+        <div id="biology-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Biology</h2>
+                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=300&fit=crop" alt="Microscopic view of cells">
+                <p>Biology is the natural science that studies life and living organisms. It encompasses a wide range of topics from molecular biology to ecology, examining how living things function, grow, and interact with their environment.</p>
+                <p>Major branches include genetics, evolution, ecology, anatomy, and physiology. Biology helps us understand ourselves and all life forms on Earth.</p>
+            </div>
+        </div>
+
+        <!-- Astronomy Page -->
+        <div id="astronomy-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Astronomy</h2>
+                <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=500&h=300&fit=crop" alt="Night sky with stars and galaxies">
+                <p>Astronomy is the scientific study of celestial objects and phenomena beyond Earth's atmosphere. It explores stars, planets, galaxies, and the universe as a whole, seeking to understand our place in the cosmos.</p>
+                <p>Modern astronomy uses advanced telescopes and space missions to study everything from exoplanets to black holes, expanding our knowledge of the universe's origin, structure, and evolution.</p>
+            </div>
+        </div>
+
+        <!-- Ancient Civilizations Page -->
+        <div id="ancient-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Ancient Civilizations</h2>
+                <img src="https://images.unsplash.com/photo-1539650116574-75c0c6d73de9?w=500&h=300&fit=crop" alt="Ancient Egyptian pyramids">
+                <p>Ancient civilizations laid the foundation for human culture, technology, and society. From Mesopotamia and Egypt to Greece and Rome, these early societies developed writing systems, laws, art, and architecture that continue to influence us today.</p>
+                <p>Study of ancient civilizations helps us understand how complex societies emerged and evolved, providing insights into human nature and social development.</p>
+            </div>
+        </div>
+
+        <!-- Medieval Period Page -->
+        <div id="medieval-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Medieval Period</h2>
+                <img src="https://images.unsplash.com/photo-1520637836862-4d197d17c60a?w=500&h=300&fit=crop" alt="Medieval castle and architecture">
+                <p>The Medieval Period, also known as the Middle Ages, spans roughly from the 5th to the 15th century. This era saw the rise of feudalism, the spread of Christianity, the development of universities, and significant cultural and technological advances.</p>
+                <p>Key events include the fall of Rome, the Crusades, the Black Death, and the Renaissance's beginning. The medieval period shaped European culture and laid groundwork for the modern world.</p>
+            </div>
+        </div>
+
+        <!-- Modern History Page -->
+        <div id="modern-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>Modern History</h2>
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop" alt="Industrial revolution machinery">
+                <p>Modern History encompasses the period from the late 15th century to the present, marked by rapid technological advancement, global exploration, industrialization, and social transformation.</p>
+                <p>Key developments include the Scientific Revolution, Enlightenment, Industrial Revolution, and the emergence of democratic ideals. This period fundamentally changed how humans live and interact globally.</p>
+            </div>
+        </div>
+
+        <!-- World Wars Page -->
+        <div id="world-wars-page" class="topic-page">
+            <button class="back-button" onclick="backToHome()">← Back to Homepage</button>
+            <div class="topic-content">
+                <h2>World Wars</h2>
+                <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&h=300&fit=crop" alt="Historical war memorial">
+                <p>The two World Wars of the 20th century were defining events that reshaped global politics, society, and technology. These conflicts involved most of the world's nations and had profound impacts on subsequent history.</p>
+                <p>World War I (1914-1918) and World War II (1939-1945) led to major geopolitical changes, technological advances in warfare, and social transformations that continue to influence international relations today.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeTopics = null;
+
+        function toggleTopics(subject) {
+            const topicsDiv = document.getElementById(subject + '-topics');
+            
+            // Close all other topic menus
+            const allTopics = document.querySelectorAll('.topics-menu');
+            allTopics.forEach(menu => {
+                if (menu.id !== subject + '-topics') {
+                    menu.classList.remove('active');
+                }
+            });
+            
+            // Toggle current menu
+            if (activeTopics === subject) {
+                topicsDiv.classList.remove('active');
+                activeTopics = null;
+            } else {
+                topicsDiv.classList.add('active');
+                activeTopics = subject;
+            }
+        }
+
+        function showTopic(topic) {
+            // Hide homepage
+            document.getElementById('homepage').style.display = 'none';
+            
+            // Hide all topic pages
+            const allPages = document.querySelectorAll('.topic-page');
+            allPages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected topic page
+            const targetPage = document.getElementById(topic + '-page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+
+        function backToHome() {
+            // Hide all topic pages
+            const allPages = document.querySelectorAll('.topic-page');
+            allPages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show homepage
+            document.getElementById('homepage').style.display = 'block';
+            
+            // Reset active topics
+            activeTopics = null;
+            const allTopics = document.querySelectorAll('.topics-menu');
+            allTopics.forEach(menu => {
+                menu.classList.remove('active');
+            });
+        }
+
+        // Handle mobile touch events
+        document.addEventListener('DOMContentLoaded', function() {
+            const subjectCards = document.querySelectorAll('.subject-card');
+            
+            subjectCards.forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    // Add touch feedback
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('touchend', function() {
+                    // Reset transform
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+
+        // Prevent default link behavior for topic links
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('topic-link')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
